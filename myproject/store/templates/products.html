@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Products{% endblock %}
+
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="header">
+        <h1 class="title">Our Products</h1>
+        {% if user.is_authenticated %}
+        <div class="basket">
+            <button class="basket-btn" onclick="toggleBasket()">🛒 Cart <span class="basket-count" id="basketCount">{{ orders|length }}</span></button>
+            <div class="basket-dropdown" id="basketDropdown">
+                <div id="basketItems">
+                    {% if orders %}
+                    {% for order in orders %}
+                    <div class="basket-item">
+                        <div class="basket-item-info">
+                            <div class="basket-item-name">{{ order.item.name }}</div>
+                            <div class="basket-item-price">${{ order.item.price }}</div>
+                        </div>
+                        <span class="basket-item-qty">×{{ order.quantity }}</span>
+                        <button class="remove-btn" onclick="removeOrder('{% url 'store:products' %}', {{ order.id }})">✕</button>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="basket-empty">Your cart is empty</div>
+                    {% endif %}
+                </div>
+                <div class="basket-footer">
+                    <span class="basket-total">Total: $<span id="basketTotal">{{ total_price }}</span></span>
+                    <button class="checkout-btn" onclick="checkoutAll('{% url 'store:buy_orders' %}', '{{ stripe_public_key }}')">Checkout</button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <h2 class="welcome">Welcome, {{ user.username }}!</h2>
+    {% else %}
+    <p class="welcome">Please log in to make a purchase.</p>
+    {% endif %}
+
+    {% if items %}
+    <div class="products-grid">
+        {% for item in items %}
+        <div class="card" onclick="window.location.href='{% url 'store:item' item.id %}'">
+            <div class="card-content">
+                <div class="name">{{ item.name }}</div>
+                <div class="description">{{ item.description }}</div>
+                <div class="price">${{ item.price }}</div>
+            </div>
+            <div class="card-buttons">
+                {% if user.is_authenticated %}
+                <button type="button" onclick="event.stopPropagation(); addToCart('{% url 'store:products' %}', {{ item.id }})">Add to
+                    Cart</button>
+                {% else %}
+                <button type="button" onclick="event.stopPropagation(); alert('Please log in first')">Add to
+                    Cart</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="no-products">
+        <p>No products available at the moment.</p>
+    </div>
+    {% endif %}
+</div>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{% static 'js/products.js' %}"></script>
+{% endblock %}
