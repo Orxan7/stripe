@@ -27,10 +27,11 @@ dotenv.load_dotenv()
 SECRET_KEY = 'django-insecure-((hg3ca&@lii*2e4=*122%8kd!z88d@fkmm3dusp@l)gald308'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+DOMAIN = os.getenv('DOMAIN', 'http://127.0.0.1:8000')
 
 # Application definition
 
@@ -122,6 +123,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

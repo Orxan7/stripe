@@ -7,7 +7,7 @@ from django.urls import reverse as url_for
 from django.contrib.auth.models import User
 from .models import Item, Order
 
-DOMAIN = 'http://127.0.0.1:8000'
+DOMAIN = settings.DOMAIN
 STRIPE_SECRET_KEY = settings.STRIPE_SECRET_KEY
 STRIPE_PUBLIC_KEY = settings.STRIPE_PUBLIC_KEY
 STRIPE_WEBHOOK_SECRET = settings.STRIPE_WEBHOOK_SECRET
@@ -50,7 +50,6 @@ def products(request):
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# Create your views here.
 def item(request, item_id):
     if request.method != 'GET':
         return JsonResponse({'error': 'Invalid request method'}, status=400)
